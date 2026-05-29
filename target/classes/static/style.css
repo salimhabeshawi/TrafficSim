@@ -1,0 +1,316 @@
+:root {
+    --bg: #f4f6f8;
+    --card: #fff;
+    --ink: #101827;
+    --muted: #5a6678;
+    --accent: #0f766e;
+    --road: #4a5a6a;
+    --edge: #f6f7f9;
+    --dash: #e8ebf0;
+    --road-edge: var(--edge);
+    --lane-dash: var(--dash);
+    --sidebar-border: #e2e8f0;
+    --green: #16a34a;
+    --red: #dc2626;
+    --dash-grad: repeating-linear-gradient(to right, var(--dash) 0, var(--dash) 16px, transparent 16px, transparent 32px);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font: 1rem "Segoe UI", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    height: 100vh;
+    overflow: hidden;
+}
+
+.app {
+    display: flex;
+    height: 100%;
+}
+
+.main-content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    overflow: hidden;
+}
+
+.sidebar {
+    flex: 0 0 320px;
+    background: var(--card);
+    border-left: 1px solid #e2e8f0;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    overflow-y: auto;
+    box-shadow: -2px 0 8px rgba(0,0,0,0.02);
+}
+
+.topbar h1 {
+    margin: 0;
+    color: var(--accent);
+    font-size: 1.8rem;
+}
+
+.topbar p {
+    margin: 0.5rem 0 0;
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.card {
+    background: var(--bg);
+    border-radius: 8px;
+    padding: 1rem;
+    border: 1px solid #e2e8f0;
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+}
+
+button {
+    border: 0;
+    border-radius: 6px;
+    padding: 0.6rem 1rem;
+    background: var(--accent);
+    color: #fff;
+    cursor: pointer;
+    font-weight: 600;
+    flex: 1;
+}
+
+button:hover {
+    filter: brightness(1.08);
+}
+
+.controls label {
+    width: 100%;
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin-top: 0.5rem;
+}
+
+.controls input[type=range] {
+    flex: 1;
+}
+
+.controls span {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.dashboard {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.card h2 {
+    margin: 0 0 0.8rem 0;
+    font-size: 1.1rem;
+    color: var(--ink);
+}
+
+.metrics div,
+.queues div {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+    font-size: 0.95rem;
+    border-bottom: 1px solid var(--sidebar-border);
+    padding-bottom: 0.3rem;
+}
+
+.metrics div:last-child,
+.queues div:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+/* ── Intersection ── */
+.intersection {
+    position: relative;
+    width: min(80vw, 600px);
+    aspect-ratio: 1 / 1;
+    background: #dce3ec;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+}
+
+/* ── Roads ── */
+.road {
+    position: absolute;
+    background: var(--road);
+}
+
+.road.horizontal {
+    top: 35%;
+    left: 0;
+    width: 100%;
+    height: 30%;
+}
+
+.road.vertical {
+    left: 35%;
+    top: 0;
+    width: 30%;
+    height: 100%;
+}
+
+/* Road edge markings */
+.road.horizontal::before,
+.road.horizontal::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: var(--road-edge);
+}
+
+.road.horizontal::before { top: 0; }
+.road.horizontal::after { bottom: 0; }
+
+.road.vertical::before,
+.road.vertical::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: 3px;
+    background: var(--road-edge);
+}
+
+.road.vertical::before { left: 0; }
+.road.vertical::after { right: 0; }
+
+/* ── Lane dividers ── */
+.lane-line {
+    position: absolute;
+    z-index: 1;
+}
+
+.lane-line.h {
+    top: calc(50% - 1px);
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--dash-grad);
+}
+
+.lane-line.v {
+    left: calc(50% - 1px);
+    top: 0;
+    height: 100%;
+    width: 2px;
+    background: repeating-linear-gradient(
+        to bottom,
+        var(--lane-dash) 0px,
+        var(--lane-dash) 16px,
+        transparent 16px,
+        transparent 32px
+    );
+}
+
+/* ── Center box (intersection proper) ── */
+.center-box {
+    position: absolute;
+    left: 35%;
+    top: 35%;
+    width: 30%;
+    height: 30%;
+    background: var(--road);
+    z-index: 1;
+    border: none;
+}
+
+/* ── Stop lines (Zebra Crossings) ── */
+.stop-line {
+    position: absolute;
+    z-index: 2;
+}
+
+.stop-line.n,
+.stop-line.s {
+    left: calc(35% + 2%);
+    width: 26%;
+    height: 40px;
+    background: var(--dash-grad);
+}
+
+.stop-line.n { top: calc(35% - 40px); }
+.stop-line.s { bottom: calc(35% - 40px); }
+
+.stop-line.e,
+.stop-line.w {
+    top: calc(35% + 2%);
+    height: 26%;
+    width: 40px;
+    background: repeating-linear-gradient(to bottom, var(--dash) 0, var(--dash) 16px, transparent 16px, transparent 32px);
+}
+
+.stop-line.e { right: calc(35% - 40px); }
+.stop-line.w { left: calc(35% - 40px); }
+
+/* ── Traffic lights ── */
+.light {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--red);
+    box-shadow: 0 0 0 2px rgba(0,0,0,.3);
+    z-index: 3;
+    transition: background .15s, box-shadow .15s;
+    will-change: background, box-shadow;
+}
+
+.light.green {
+    background: var(--green);
+    box-shadow: 0 0 12px var(--green);
+}
+
+.light.north { left: calc(50% - 8px); top: calc(35% - 22px); }
+.light.south { left: calc(50% - 8px); bottom: calc(35% - 22px); }
+.light.east  { right: calc(35% - 22px); top: calc(50% - 8px); }
+.light.west  { left: calc(35% - 22px); top: calc(50% - 8px); }
+
+/* ── Cars ── */
+.car {
+    position: absolute;
+    width: 16px;
+    height: 10px;
+    border-radius: 2px;
+    box-shadow: 0 0 0 1px rgba(0,0,0,.4), 0 1px 3px rgba(0,0,0,.2);
+    z-index: 10;
+    will-change: left, top, transform;
+}
+
+.car.vertical {
+    width: 10px;
+    height: 16px;
+}
+
+.car.moving {
+    z-index: 11;
+}
+
+@media (max-width: 768px) {
+    body { overflow-y: auto; }
+    .app { flex-direction: column; }
+    .main-content { padding: 1rem; }
+    .sidebar { flex: none; border-left: 0; border-top: 1px solid #e2e8f0; }
+}
